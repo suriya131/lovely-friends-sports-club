@@ -4,7 +4,11 @@
   "description": "Lovely Friends Club Sports Website & Backend Database",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "echo 'Build complete'"
+  },
+  "engines": {
+    "node": ">=22.x"
   },
   "keywords": ["sports", "kabaddi", "supabase", "sqlite", "database"],
   "author": "Lovely Friends Club",
