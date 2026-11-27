@@ -1,0 +1,12 @@
+{
+  "name": "lovely-friends-club",
+  "version": "1.0.0",
+  "description": "Lovely Friends Club Sports Website & Backend Database",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["sports", "kabaddi", "supabase", "sqlite", "database"],
+  "author": "Lovely Friends Club",
+  "license": "ISC"
+}

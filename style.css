@@ -1,0 +1,118 @@
+body {
+    background-color: #121212;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.4)), url('bg-live.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+}
+h1, h2, h3, h4, h5, .font-bebas {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px;
+}
+.glass-card {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.glow-yellow {
+    transition: all 0.3s ease;
+}
+.glow-yellow:hover {
+    box-shadow: 0 0 20px rgba(255, 234, 0, 0.5);
+    border-color: #ffea00;
+}
+.glow-green {
+    transition: all 0.3s ease;
+}
+.glow-green:hover {
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.5);
+    border-color: #39ff14;
+}
+.text-neon-yellow {
+    color: #ffea00;
+    text-shadow: 0 0 10px rgba(255, 234, 0, 0.3);
+}
+.text-neon-green {
+    color: #39ff14;
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+}
+.fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.nav-link {
+    position: relative;
+    padding-bottom: 4px;
+    transition: color 0.3s ease;
+}
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #ffea00;
+    transition: width 0.3s ease;
+}
+.nav-link:hover::after {
+    width: 100%;
+}
+.nav-link.active::after {
+    width: 100%;
+}
+.nav-link.active {
+    color: #ffea00;
+}
+
+
+/* Dark scheme enforcement & prevent browser autofill white background */
+input, select, textarea {
+    color-scheme: dark !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active,
+select:-webkit-autofill,
+textarea:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #111827 inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    caret-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+
+/* =======================================================
+   MOBILE PHONE & TOUCH OPTIMIZATIONS
+   ======================================================= */
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+@media (max-width: 640px) {
+    /* Prevent mobile browser auto-zoom on input tap */
+    input[type="text"],
+    input[type="number"],
+    input[type="password"],
+    input[type="email"],
+    input[type="tel"],
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+
+    /* Compact glass card padding for mobile phones */
+    .glass-card {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
+}

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/png" href="logo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Match Score - Lovely Friends Sports Club</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neonYellow: '#ffea00',
+                        neonGreen: '#39ff14',
+                        charcoal: '#121212',
+                        cardBlack: '#1e1e1e'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        if (!localStorage.getItem('lfc_auth_user')) {
+            window.location.replace('signin.html');
+        }
+    </script>
+    <style>
+                .live-bg-container {
+            background-image: url('bg-live.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        .live-bg-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(10, 10, 20, 0.6) 0%, rgba(10, 10, 15, 0.95) 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Keep main content above overlay */
+        nav,
+        main,
+        footer {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Particles Effect */
+        .particles-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #ffea00;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffea00, 0 0 20px #ffea00;
+            opacity: 0;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.6;
+            }
+
+            90% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateY(-10vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-charcoal text-white min-h-screen flex flex-col font-inter live-bg-container">
+
+        <!-- Navigation -->
+    <nav class="glass-card sticky top-0 z-50 px-6 py-4 flex justify-between items-center relative">
+        <a href="index.html" class="flex items-center gap-3 group">
+            <img src="logo.png" alt="NSP Sports Club Logo" class="w-10 h-10 rounded-full object-cover border border-cyan-400/60 shadow-[0_0_10px_rgba(6,182,212,0.4)] group-hover:scale-105 transition-transform">
+            <h1 class="text-2xl font-bebas tracking-wide text-white group-hover:text-neonYellow transition-colors">LOVELY FRIENDS</h1>
+        </a>
+
+        <!-- Right Side: Role Badge + Menu Button (Laptop & Mobile) -->
+        <div class="flex items-center gap-3">
+            <span id="nav-auth-badge" class="flex items-center"></span>
+            <button id="mobile-menu-btn" onclick="toggleNavMenu(event)" class="flex items-center gap-2 bg-gray-900 border border-gray-700 hover:border-neonYellow text-white hover:text-neonYellow px-3.5 py-1.5 rounded-lg transition font-inter text-sm font-semibold shadow-md focus:outline-none cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <span>MENU</span>
+            </button>
+        </div>
+        
+                <!-- Dropdown Menu (Laptop & Mobile) -->
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full md:w-80 md:left-auto md:right-6 bg-charcoal/95 backdrop-blur-xl border border-gray-800 flex-col font-inter font-semibold text-sm shadow-2xl z-50 md:rounded-2xl md:mt-2 overflow-hidden">
+            <!-- Profile Status Header -->
+            <div class="px-6 py-4 border-b border-gray-800/80 bg-gray-950/60 flex items-center justify-between">
+                <span id="menu-role-status" class="font-bebas text-xl tracking-wider text-cyan-400 flex items-center gap-2">
+                    <span id="menu-role-dot" class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                    <span id="menu-role-name">MEMBER</span>
+                </span>
+                <span id="menu-user-id" class="font-inter text-xs text-gray-400 font-normal"></span>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="flex flex-col">
+                <a href="index.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>HOME</span>
+                </a>
+                <a href="live-score.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>LIVE MATCH SCORE</span>
+                </a>
+                <a href="players-list.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>PLAYERS LIST</span>
+                </a>
+                <a href="stats.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>MATCH STATS</span>
+                </a>
+                <a href="gallery.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>GALLERY</span>
+                </a>
+                <a href="squad.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>SQUAD & INFO</span>
+                </a>
+            </div>
+
+            <!-- Sign Out Button Footer -->
+            <div class="p-4 border-t border-gray-800/80 bg-gray-950/60 flex justify-center">
+                <button type="button" onclick="Auth.logout()" class="w-full text-center border border-red-500/80 text-red-400 hover:bg-red-500/20 hover:text-red-300 font-bebas text-lg tracking-wider px-4 py-2 rounded-lg transition cursor-pointer">
+                    SIGN OUT
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-2.5 sm:px-4 py-4 sm:py-8 flex flex-col items-center w-full max-w-full">
+        <h2 class="font-bebas text-3xl sm:text-5xl md:text-6xl text-neonYellow mb-1 sm:mb-2 text-center tracking-wider">LIVE MATCH SCORE</h2>
+        <div id="db-status"
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-8 bg-gray-800 text-gray-400 border border-gray-700">
+            <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span> Connecting to live score server...
+        </div>
+
+        <div class="glass-card w-full max-w-4xl p-6 md:p-10 rounded-xl border border-gray-800">
+            <!-- Teams Scoreboard (Responsive Side-by-Side on Phone) -->
+            <div class="grid grid-cols-[1fr_auto_1fr] items-center mb-6 gap-2 sm:gap-6 w-full">
+                <!-- Your Team -->
+                <div class="text-center bg-gray-900/60 p-2.5 sm:p-5 rounded-2xl border border-neonGreen/40 shadow-[0_0_15px_rgba(57,255,20,0.1)]">
+                    <h3 class="font-bebas text-xl sm:text-3xl text-neonGreen mb-1 tracking-wide truncate">YOUR TEAM</h3>
+                    <div class="text-5xl sm:text-7xl font-bebas text-white bg-gray-950/80 rounded-xl py-3 sm:py-5 border border-neonGreen/30 shadow-[0_0_15px_rgba(57,255,20,0.25)]"
+                        id="your-score">0</div>
+                </div>
+
+                <div class="font-bebas text-2xl sm:text-4xl text-gray-400 font-bold px-1 sm:px-3 text-center select-none">VS</div>
+
+                <!-- Opponent Team -->
+                <div class="text-center bg-gray-900/60 p-2.5 sm:p-5 rounded-2xl border border-gray-700/60 shadow-[0_0_15px_rgba(255,255,255,0.03)]">
+                    <h3 class="font-bebas text-xl sm:text-3xl text-gray-300 mb-1 tracking-wide truncate">OPPONENT</h3>
+                    <div class="text-5xl sm:text-7xl font-bebas text-white bg-gray-950/80 rounded-xl py-3 sm:py-5 border border-gray-800 shadow-[0_0_15px_rgba(255,255,255,0.05)]"
+                        id="opp-score">0</div>
+                </div>
+            </div>
+
+            <!-- Match Completed / Score Reset Button -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-10">
+                <button type="button" onclick="resetScoresToZero()"
+                    class="w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-r from-red-950/90 via-red-900/90 to-red-950/90 hover:from-red-800 hover:to-red-700 border-2 border-red-500 hover:border-red-400 text-red-100 hover:text-white px-4 sm:px-8 py-2.5 sm:py-3.5 rounded-xl font-bebas text-lg sm:text-2xl tracking-wider transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(239,68,68,0.35)] cursor-pointer text-center">
+                    <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span>MATCH COMPLETED &mdash; SET SCORE BACK TO 0</span>
+                </button>
+            </div>
+            <!-- Watch Live Option -->
+            <div
+                class="bg-gray-900 p-6 rounded-xl border border-gray-700 mb-10 text-center flex flex-col md:flex-row justify-center items-center gap-4">
+                <input type="text" id="yt-link" placeholder="Paste YouTube Live Link here..."
+                    class="w-full max-w-md bg-cardBlack border border-gray-600 rounded px-4 py-2 text-white font-inter focus:outline-none focus:border-red-500 transition">
+                <button onclick="watchLive()"
+                    class="bg-red-600 text-white font-bebas text-xl px-6 py-2 rounded hover:bg-red-700 transition flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
+                    </svg>
+                    WATCH LIVE
+                </button>
+            </div>
+
+            <!-- Timer Settings -->
+            <div class="bg-gray-900/90 p-4 sm:p-8 rounded-2xl border border-gray-700/80 mb-6 sm:mb-10 flex flex-col items-center w-full">
+                <h4 class="font-bebas text-2xl text-white mb-2 tracking-wider">MATCH TIMER</h4>
+                <div class="text-5xl sm:text-7xl font-bebas text-white mb-2 tracking-widest text-glow" id="timer-display">20:00</div>
+                <div id="timer-status" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-800 text-gray-300 border border-gray-700 mb-6 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-gray-400"></span> READY
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full">
+                    <!-- Minutes Adjuster Input with - and + buttons -->
+                    <div class="flex items-center gap-1.5 bg-cardBlack border border-gray-600 rounded-xl px-2.5 py-1.5 focus-within:border-electricBlue transition shadow-inner">
+                        <button type="button" onclick="adjustTimerMinutes(-1)" class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 text-white font-bold text-lg flex items-center justify-center transition cursor-pointer border border-gray-700 hover:border-gray-500 active:scale-95" title="Minus 1 Minute">−</button>
+                        <input type="number" id="timer-input" value="20" min="1" max="120"
+                            class="w-12 bg-transparent text-white font-inter text-center font-bold text-base focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            onwheel="this.blur()"
+                            onchange="handleTimerInputChange()" oninput="handleTimerInputChange()">
+                        <span class="text-gray-400 font-inter text-sm pr-1 select-none">Minutes</span>
+                        <button type="button" onclick="adjustTimerMinutes(1)" class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 text-white font-bold text-lg flex items-center justify-center transition cursor-pointer border border-gray-700 hover:border-gray-500 active:scale-95" title="Plus 1 Minute">+</button>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-center gap-2 w-full sm:w-auto">
+                        <button type="button" id="start-btn" onclick="startTimer()"
+                            class="flex-1 sm:flex-none bg-neonGreen text-charcoal font-bebas text-xl sm:text-2xl px-5 sm:px-7 py-2 sm:py-2.5 rounded-xl hover:bg-green-400 transition transform hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(57,255,20,0.4)] cursor-pointer font-bold">START</button>
+                        <button type="button" id="pause-btn" onclick="pauseTimer()"
+                            class="flex-1 sm:flex-none bg-amber-500 text-charcoal font-bebas text-xl sm:text-2xl px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl hover:bg-amber-400 transition transform hover:scale-105 active:scale-95 shadow-md cursor-pointer font-bold">PAUSE</button>
+                        <button type="button" id="reset-btn" onclick="resetTimer()"
+                            class="flex-1 sm:flex-none bg-gray-700 text-white font-bebas text-xl sm:text-2xl px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl hover:bg-gray-600 transition transform hover:scale-105 active:scale-95 shadow-md cursor-pointer font-bold">RESET</button>
+                    </div>
+                </div>
+
+                <!-- Match Time Presets -->
+                <div class="flex flex-wrap items-center justify-center gap-2 mt-4 pt-3 border-t border-gray-800/80 w-full max-w-md">
+                    <span class="text-gray-400 text-xs font-inter uppercase font-semibold mr-1">Presets:</span>
+                    <button type="button" onclick="setTimerPreset(10)" class="preset-btn px-3 py-1 text-xs rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition cursor-pointer font-semibold active:scale-95">10 Min</button>
+                    <button type="button" onclick="setTimerPreset(15)" class="preset-btn px-3 py-1 text-xs rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition cursor-pointer font-semibold active:scale-95">15 Min</button>
+                    <button type="button" onclick="setTimerPreset(20)" class="preset-btn px-3 py-1 text-xs rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition cursor-pointer font-semibold active:scale-95">20 Min</button>
+                    <button type="button" onclick="setTimerPreset(30)" class="preset-btn px-3 py-1 text-xs rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition cursor-pointer font-semibold active:scale-95">30 Min</button>
+                    <button type="button" onclick="setTimerPreset(40)" class="preset-btn px-3 py-1 text-xs rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition cursor-pointer font-semibold active:scale-95">40 Min</button>
+                </div>
+            </div>
+
+            <!-- Score Controls -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Score Controls for Your Team -->
+                <div
+                    class="bg-cardBlack p-6 rounded-xl border border-neonGreen text-center shadow-[0_0_15px_rgba(57,255,20,0.1)]">
+                    <h4 class="font-bebas text-2xl text-white mb-4">ADD POINTS (YOUR TEAM)</h4>
+                    <div class="flex flex-wrap justify-center gap-3">
+                        <button type="button" onclick="addYourScore(1)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-neonGreen hover:text-neonGreen transition active:scale-95 cursor-pointer">+1</button>
+                        <button type="button" onclick="addYourScore(2)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-neonGreen hover:text-neonGreen transition active:scale-95 cursor-pointer">+2</button>
+                        <button type="button" onclick="addYourScore(3)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-neonGreen hover:text-neonGreen transition active:scale-95 cursor-pointer">+3</button>
+                        <button type="button" onclick="addYourScore(4)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-neonGreen hover:text-neonGreen transition active:scale-95 cursor-pointer">+4</button>
+                        <button type="button" onclick="addYourScore(5)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-neonGreen hover:text-neonGreen transition active:scale-95 cursor-pointer">+5</button>
+                        <button type="button" onclick="addYourScore(6)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-neonGreen hover:text-neonGreen transition active:scale-95 cursor-pointer">+6</button>
+                        <button type="button" onclick="addYourScore(7)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-neonGreen hover:text-neonGreen transition active:scale-95 cursor-pointer">+7</button>
+                        <button type="button" onclick="addYourScore(8)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-neonGreen hover:text-neonGreen transition active:scale-95 cursor-pointer">+8</button>
+                        <button type="button" onclick="addYourScore(9)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-neonGreen hover:text-neonGreen transition active:scale-95 cursor-pointer">+9</button>
+                    </div>
+                    <div class="mt-4 flex justify-center items-center gap-4 text-sm font-inter">
+                        <button onclick="addYourScore(-1)"
+                            class="text-gray-400 hover:text-red-400 underline transition cursor-pointer">Undo last point</button>
+                        <span class="text-gray-600">|</span>
+                        <button onclick="resetYourScore()"
+                            class="text-red-400 hover:text-red-300 font-semibold underline transition cursor-pointer">Set to 0</button>
+                    </div>
+                </div>
+
+                <!-- Score Controls for Opponent Team -->
+                <div
+                    class="bg-cardBlack p-6 rounded-xl border border-gray-500 text-center shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                    <h4 class="font-bebas text-2xl text-white mb-4">ADD POINTS (OPPONENT)</h4>
+                    <div class="flex flex-wrap justify-center gap-3">
+                        <button type="button" onclick="addOppScore(1)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-white hover:text-white transition active:scale-95 cursor-pointer">+1</button>
+                        <button type="button" onclick="addOppScore(2)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-white hover:text-white transition active:scale-95 cursor-pointer">+2</button>
+                        <button type="button" onclick="addOppScore(3)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-white hover:text-white transition active:scale-95 cursor-pointer">+3</button>
+                        <button type="button" onclick="addOppScore(4)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-white hover:text-white transition active:scale-95 cursor-pointer">+4</button>
+                        <button type="button" onclick="addOppScore(5)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-white hover:text-white transition active:scale-95 cursor-pointer">+5</button>
+                        <button type="button" onclick="addOppScore(6)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-white hover:text-white transition active:scale-95 cursor-pointer">+6</button>
+                        <button type="button" onclick="addOppScore(7)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-white hover:text-white transition active:scale-95 cursor-pointer">+7</button>
+                        <button type="button" onclick="addOppScore(8)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-white hover:text-white transition active:scale-95 cursor-pointer">+8</button>
+                        <button type="button" onclick="addOppScore(9)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-800 border border-gray-600 text-white font-bebas text-lg sm:text-xl hover:border-white hover:text-white transition active:scale-95 cursor-pointer">+9</button>
+                    </div>
+                    <div class="mt-4 flex justify-center items-center gap-4 text-sm font-inter">
+                        <button onclick="addOppScore(-1)"
+                            class="text-gray-400 hover:text-red-400 underline transition cursor-pointer">Undo last point</button>
+                        <span class="text-gray-600">|</span>
+                        <button onclick="resetOppScore()"
+                            class="text-red-400 hover:text-red-300 font-semibold underline transition cursor-pointer">Set to 0</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 py-6 text-center text-gray-500 font-inter text-xs mt-auto">
+        <p>&copy; 2026 Lovely Friends Sports Club - Namasivayapuram. All rights reserved.</p>
+    </footer>
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        let yourScore = 0;
+        let oppScore = 0;
+        let timerInterval;
+        let timeLeft = 20 * 60;
+        let isTimerRunning = false;
+
+        function updateDbStatus(isLiveConnected) {
+            const statusEl = document.getElementById('db-status');
+            if (!statusEl) return;
+            if (isLiveConnected) {
+                statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-neonGreen animate-ping"></span> Realtime Score Broadcast Active';
+                statusEl.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-8 bg-green-950/60 text-neonGreen border border-neonGreen/40';
+            } else {
+                statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-yellow-400"></span> Local Offline Mode';
+                statusEl.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-8 bg-yellow-950/40 text-yellow-400 border border-yellow-500/40';
+            }
+        }
+
+        async function initLiveMatch() {
+            try {
+                const live = await API.getLiveMatch();
+                if (live) {
+                    yourScore = live.your_score || 0;
+                    oppScore = live.opp_score || 0;
+                    document.getElementById('your-score').innerText = yourScore;
+                    document.getElementById('opp-score').innerText = oppScore;
+                    if (live.yt_link) {
+                        document.getElementById('yt-link').value = live.yt_link;
+                    }
+                }
+                updateDbStatus(API.isLocalServer);
+            } catch (err) {
+                console.error(err);
+                updateDbStatus(false);
+            }
+
+            // Realtime SSE updates
+            API.listenLiveUpdates((data) => {
+                if (data) {
+                    if (data.your_score !== undefined) {
+                        yourScore = data.your_score;
+                        document.getElementById('your-score').innerText = yourScore;
+                    }
+                    if (data.opp_score !== undefined) {
+                        oppScore = data.opp_score;
+                        document.getElementById('opp-score').innerText = oppScore;
+                    }
+                    if (data.yt_link && !document.getElementById('yt-link').value) {
+                        document.getElementById('yt-link').value = data.yt_link;
+                    }
+                }
+            });
+        }
+
+        async function addYourScore(points) {
+            yourScore += points;
+            if (yourScore < 0) yourScore = 0;
+            document.getElementById('your-score').innerText = yourScore;
+            await API.updateLiveMatch({ your_score: yourScore });
+        }
+
+        async function addOppScore(points) {
+            oppScore += points;
+            if (oppScore < 0) oppScore = 0;
+            document.getElementById('opp-score').innerText = oppScore;
+            await API.updateLiveMatch({ opp_score: oppScore });
+        }
+
+        
+        async function resetScoresToZero(skipConfirm = false) {
+            if (!skipConfirm) {
+                const confirmed = confirm("Are you sure the match is completed? This will set both team scores back to 0.");
+                if (!confirmed) return;
+            }
+            yourScore = 0;
+            oppScore = 0;
+            document.getElementById('your-score').innerText = '0';
+            document.getElementById('opp-score').innerText = '0';
+            resetTimer();
+            if (typeof API !== 'undefined') {
+                await API.updateLiveMatch({ your_score: 0, opp_score: 0 });
+            }
+            showResetToast("Match completed! Both scores reset back to 0.");
+        }
+
+        async function resetYourScore() {
+            if (!confirm("Reset Your Team score back to 0?")) return;
+            yourScore = 0;
+            document.getElementById('your-score').innerText = '0';
+            if (typeof API !== 'undefined') {
+                await API.updateLiveMatch({ your_score: 0 });
+            }
+            showResetToast("Your team score reset to 0.");
+        }
+
+        async function resetOppScore() {
+            if (!confirm("Reset Opponent score back to 0?")) return;
+            oppScore = 0;
+            document.getElementById('opp-score').innerText = '0';
+            if (typeof API !== 'undefined') {
+                await API.updateLiveMatch({ opp_score: 0 });
+            }
+            showResetToast("Opponent score reset to 0.");
+        }
+
+        function showResetToast(message) {
+            const existing = document.getElementById('reset-toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'reset-toast';
+            toast.className = 'fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-neonGreen text-black font-bebas text-xl px-6 py-3 rounded-xl shadow-[0_0_20px_rgba(57,255,20,0.6)] z-50 flex items-center gap-2';
+            toast.innerHTML = '<svg class="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> <span>' + message + '</span>';
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        async function watchLive() {
+            const link = document.getElementById('yt-link').value.trim();
+            if (link && (link.includes('youtube.com') || link.includes('youtu.be'))) {
+                await API.updateLiveMatch({ yt_link: link });
+                window.open(link, '_blank');
+            } else {
+                alert('Please enter a valid YouTube link.');
+            }
+        }
+
+                function updateTimerDisplay() {
+            const displayEl = document.getElementById('timer-display');
+            if (!displayEl) return;
+            const minutes = Math.floor(Math.max(0, timeLeft) / 60);
+            const seconds = Math.max(0, timeLeft) % 60;
+            displayEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimerStatus(status) {
+            const statusEl = document.getElementById('timer-status');
+            const displayEl = document.getElementById('timer-display');
+            if (!statusEl) return;
+            if (status === 'running') {
+                statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-neonGreen animate-pulse"></span> RUNNING';
+                statusEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-950/80 text-neonGreen border border-neonGreen/40 mb-6 shadow-sm';
+                if (displayEl) displayEl.className = 'text-5xl sm:text-7xl font-bebas text-neonGreen mb-2 tracking-widest text-glow animate-pulse';
+            } else if (status === 'paused') {
+                statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span> PAUSED';
+                statusEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-950/80 text-amber-300 border border-amber-500/40 mb-6 shadow-sm';
+                if (displayEl) displayEl.className = 'text-5xl sm:text-7xl font-bebas text-white/90 mb-2 tracking-widest text-glow';
+            } else if (status === 'completed') {
+                statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> TIME COMPLETED';
+                statusEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-950/80 text-red-400 border border-red-500/40 mb-6 shadow-sm';
+                if (displayEl) displayEl.className = 'text-5xl sm:text-7xl font-bebas text-red-500 mb-2 tracking-widest text-glow';
+            } else {
+                statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-gray-400"></span> READY';
+                statusEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-800 text-gray-300 border border-gray-700 mb-6 shadow-sm';
+                if (displayEl) displayEl.className = 'text-5xl sm:text-7xl font-bebas text-white mb-2 tracking-widest text-glow';
+            }
+        }
+
+        function highlightPreset(mins) {
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                const text = btn.innerText.trim();
+                if (text.startsWith(mins + ' ')) {
+                    btn.className = 'preset-btn px-3 py-1 text-xs rounded-lg bg-cyan-950/70 text-electricBlue border border-electricBlue transition cursor-pointer font-bold shadow-sm scale-105';
+                } else {
+                    btn.className = 'preset-btn px-3 py-1 text-xs rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition cursor-pointer font-semibold active:scale-95';
+                }
+            });
+        }
+
+        function getMinutesInputValue() {
+            const inputEl = document.getElementById('timer-input');
+            const val = inputEl ? parseInt(inputEl.value, 10) : 20;
+            return (!isNaN(val) && val > 0) ? Math.min(val, 120) : 20;
+        }
+
+        function handleTimerInputChange() {
+            const mins = getMinutesInputValue();
+            highlightPreset(mins);
+            if (!isTimerRunning) {
+                timeLeft = mins * 60;
+                updateTimerDisplay();
+                updateTimerStatus('ready');
+            }
+        }
+
+        function adjustTimerMinutes(delta) {
+            const inputEl = document.getElementById('timer-input');
+            if (!inputEl) return;
+            let current = getMinutesInputValue();
+            let next = Math.max(1, Math.min(120, current + delta));
+            inputEl.value = next;
+            handleTimerInputChange();
+        }
+
+        function setTimerPreset(mins) {
+            const inputEl = document.getElementById('timer-input');
+            if (inputEl) inputEl.value = mins;
+            handleTimerInputChange();
+        }
+
+        function startTimer() {
+            if (isTimerRunning) return;
+
+            if (timeLeft <= 0) {
+                timeLeft = getMinutesInputValue() * 60;
+            }
+
+            isTimerRunning = true;
+            updateTimerDisplay();
+            updateTimerStatus('running');
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    isTimerRunning = false;
+                    timeLeft = 0;
+                    updateTimerDisplay();
+                    updateTimerStatus('completed');
+                    if (confirm("Match time is completed! Set scores back to 0?")) {
+                        resetScoresToZero(true);
+                    }
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            if (!isTimerRunning) return;
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            updateTimerStatus('paused');
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            const mins = getMinutesInputValue();
+            timeLeft = mins * 60;
+            highlightPreset(mins);
+            updateTimerDisplay();
+            updateTimerStatus('ready');
+        }
+
+        // Initialize timer display and load DB
+        resetTimer();
+        initLiveMatch();
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => { resetTimer(); initLiveMatch(); });
+        }
+
+        // Initialize particles
+        function initParticles() {
+            const particlesContainer = document.createElement('div');
+            particlesContainer.className = 'particles-layer';
+            document.body.appendChild(particlesContainer);
+
+            for (let i = 0; i < 40; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (Math.random() * 8 + 4) + 's';
+                p.style.animationDelay = (Math.random() * 5) + 's';
+
+                // Randomly color some particles orange/red for that subtle effect
+                if (Math.random() > 0.7) {
+                    p.style.background = '#ff5722';
+                    p.style.boxShadow = '0 0 10px #ff5722, 0 0 20px #ff5722';
+                }
+
+                particlesContainer.appendChild(p);
+            }
+        }
+        initParticles();
+    </script>
+
+    
+
+</body>
+
+</html>

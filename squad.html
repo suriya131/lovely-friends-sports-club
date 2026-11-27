@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="logo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Squad & Info - Lovely Friends Sports Club</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neonYellow: '#ffea00',
+                        neonGreen: '#39ff14',
+                        charcoal: '#121212',
+                        cardBlack: '#1e1e1e'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        if (!localStorage.getItem('lfc_auth_user')) {
+            window.location.replace('signin.html');
+        }
+    </script>
+</head>
+<body class="bg-charcoal text-white min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="glass-card sticky top-0 z-50 px-6 py-4 flex justify-between items-center relative">
+        <a href="index.html" class="flex items-center gap-3 group">
+            <img src="logo.png" alt="NSP Sports Club Logo" class="w-10 h-10 rounded-full object-cover border border-cyan-400/60 shadow-[0_0_10px_rgba(6,182,212,0.4)] group-hover:scale-105 transition-transform">
+            <h1 class="text-2xl font-bebas tracking-wide text-white group-hover:text-neonYellow transition-colors">LOVELY FRIENDS</h1>
+        </a>
+
+        <!-- Right Side: Role Badge + Menu Button (Laptop & Mobile) -->
+        <div class="flex items-center gap-3">
+            <span id="nav-auth-badge" class="flex items-center"></span>
+            <button id="mobile-menu-btn" onclick="toggleNavMenu(event)" class="flex items-center gap-2 bg-gray-900 border border-gray-700 hover:border-neonYellow text-white hover:text-neonYellow px-3.5 py-1.5 rounded-lg transition font-inter text-sm font-semibold shadow-md focus:outline-none cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <span>MENU</span>
+            </button>
+        </div>
+        
+                <!-- Dropdown Menu (Laptop & Mobile) -->
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full md:w-80 md:left-auto md:right-6 bg-charcoal/95 backdrop-blur-xl border border-gray-800 flex-col font-inter font-semibold text-sm shadow-2xl z-50 md:rounded-2xl md:mt-2 overflow-hidden">
+            <!-- Profile Status Header -->
+            <div class="px-6 py-4 border-b border-gray-800/80 bg-gray-950/60 flex items-center justify-between">
+                <span id="menu-role-status" class="font-bebas text-xl tracking-wider text-cyan-400 flex items-center gap-2">
+                    <span id="menu-role-dot" class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                    <span id="menu-role-name">MEMBER</span>
+                </span>
+                <span id="menu-user-id" class="font-inter text-xs text-gray-400 font-normal"></span>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="flex flex-col">
+                <a href="index.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>HOME</span>
+                </a>
+                <a href="live-score.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>LIVE MATCH SCORE</span>
+                </a>
+                <a href="players-list.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>PLAYERS LIST</span>
+                </a>
+                <a href="stats.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>MATCH STATS</span>
+                </a>
+                <a href="gallery.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>GALLERY</span>
+                </a>
+                <a href="squad.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>SQUAD & INFO</span>
+                </a>
+            </div>
+
+            <!-- Sign Out Button Footer -->
+            <div class="p-4 border-t border-gray-800/80 bg-gray-950/60 flex justify-center">
+                <button type="button" onclick="Auth.logout()" class="w-full text-center border border-red-500/80 text-red-400 hover:bg-red-500/20 hover:text-red-300 font-bebas text-lg tracking-wider px-4 py-2 rounded-lg transition cursor-pointer">
+                    SIGN OUT
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow px-4 md:px-10 py-12 max-w-7xl mx-auto w-full fade-in">
+        
+        <header class="mb-12 text-center md:text-left border-b border-gray-800 pb-6">
+            <h2 class="font-bebas text-5xl md:text-7xl text-white mb-2">SQUAD &amp; <span class="text-neonYellow">CLUB INFO</span></h2>
+            <p class="font-inter text-gray-400">Official Roster, Club Management &amp; Challenges</p>
+        </header>
+
+        <!-- Team Photo Banner -->
+        <div class="glass-card rounded-2xl overflow-hidden border border-gray-800 mb-12 shadow-2xl">
+            <img src="team-photo.jpg" alt="Lovely Friends Sports Club Team" class="w-full h-auto object-cover max-h-[600px] object-center">
+            <div class="p-6 md:p-8 bg-cardBlack/90 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-t border-gray-800">
+                <div>
+                    <p class="font-bebas text-2xl text-neonYellow tracking-widest">LOVELY FRIENDS SPORTS CLUB - SQUAD</p>
+                    <p class="font-inter text-gray-400 text-sm">Unity, Passion &amp; Sportsmanship &bull; Namasivayapuram</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <span class="px-4 py-1.5 rounded-lg bg-gray-900 border border-neonGreen/40 text-neonGreen font-bebas text-lg">KABADDI</span>
+                    <span class="px-4 py-1.5 rounded-lg bg-gray-900 border border-neonYellow/40 text-neonYellow font-bebas text-lg">CRICKET</span>
+                    <span class="px-4 py-1.5 rounded-lg bg-gray-900 border border-cyan-400/40 text-cyan-300 font-bebas text-lg">VOLLEYBALL</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <!-- Home Ground -->
+            <div class="glass-card p-6 rounded-xl border border-gray-800 flex flex-col items-center text-center">
+                <div class="w-12 h-12 rounded-full bg-green-950/60 border border-neonGreen/40 flex items-center justify-center text-neonGreen mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </div>
+                <h4 class="font-bebas text-2xl text-white mb-2">HOME GROUND</h4>
+                <p class="font-inter text-gray-400 text-sm">Dr. A.P.J. Abdul Kalam Ground<br>Namasivayapuram, Tamil Nadu</p>
+            </div>
+
+            <!-- Training & Schedule -->
+            <div class="glass-card p-6 rounded-xl border border-gray-800 flex flex-col items-center text-center">
+                <div class="w-12 h-12 rounded-full bg-yellow-950/60 border border-neonYellow/40 flex items-center justify-center text-neonYellow mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h4 class="font-bebas text-2xl text-white mb-2">TRAINING SESSIONS</h4>
+                <p class="font-inter text-gray-400 text-sm">Every Morning 6:00 AM - 8:30 AM<br>Evening Practice 5:00 PM - 7:30 PM</p>
+            </div>
+
+            <!-- Motto & Values -->
+            <div class="glass-card p-6 rounded-xl border border-gray-800 flex flex-col items-center text-center">
+                <div class="w-12 h-12 rounded-full bg-cyan-950/60 border border-cyan-400/40 flex items-center justify-center text-cyan-300 mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h4 class="font-bebas text-2xl text-white mb-2">CLUB MOTTO</h4>
+                <p class="font-inter text-neonYellow text-sm italic">"தோல்வி உன்னை துரத்தினால் <br> நீ வெற்றியை நோக்கி ஓடு"</p>
+            </div>
+        </div>
+
+        <!-- Challenge Us Section & Request Box -->
+        <section class="mt-8">
+            <div class="glass-card p-8 rounded-xl border border-gray-800">
+                <h3 class="font-bebas text-3xl text-white mb-2">CHALLENGE US</h3>
+                <p class="font-inter text-gray-400 text-sm mb-6">Want to schedule a friendly match or join the club? Drop us a challenge request.</p>
+                
+                <form id="challenge-form" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <input id="req-name" type="text" placeholder="Team/Player Name" required class="w-full bg-gray-900 bg-opacity-50 border border-gray-700 rounded px-4 py-3 text-white focus:outline-none focus:border-neonYellow transition font-inter text-sm">
+                        <select id="req-sport" required class="w-full bg-gray-900 bg-opacity-50 border border-gray-700 rounded px-4 py-3 text-white focus:outline-none focus:border-neonYellow transition font-inter text-sm">
+                            <option value="">Select Sport...</option>
+                            <option value="Kabaddi">Kabaddi</option>
+                            <option value="Cricket">Cricket</option>
+                            <option value="Volleyball">Volleyball</option>
+                        </select>
+                    </div>
+                    <input id="req-contact" type="tel" placeholder="Contact Number" required class="w-full bg-gray-900 bg-opacity-50 border border-gray-700 rounded px-4 py-3 text-white focus:outline-none focus:border-neonYellow transition font-inter text-sm">
+                    <textarea id="req-msg" placeholder="Message / Preferred Date / Ground Details" rows="3" required class="w-full bg-gray-900 bg-opacity-50 border border-gray-700 rounded px-4 py-3 text-white focus:outline-none focus:border-neonYellow transition font-inter text-sm"></textarea>
+                    
+                    <button type="submit" class="w-full bg-neonGreen text-charcoal font-bebas text-xl py-3 rounded hover:bg-green-400 transition font-bold shadow-[0_0_15px_#39ff14] cursor-pointer">
+                        SEND REQUEST
+                    </button>
+                </form>
+                
+                <!-- Request Box -->
+                <div class="mt-10 border-t border-gray-800 pt-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-bebas text-2xl text-neonYellow">REQUEST BOX</h4>
+                        <span class="text-xs text-gray-500 font-inter italic">Admin password required to delete requests</span>
+                    </div>
+                    <div id="request-container" class="space-y-4 max-h-96 overflow-y-auto pr-2">
+                        <p id="no-requests" class="text-gray-500 font-inter text-sm italic">Loading requests...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-gray-800 py-6 text-center text-gray-500 font-inter text-xs mt-auto">
+        <p>&copy; 2026 Lovely Friends Sports Club - Namasivayapuram. All rights reserved.</p>
+    </footer>
+
+    <!-- Challenge and Request Box Scripts -->
+    <script>
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        async function loadRequests() {
+            const container = document.getElementById('request-container');
+            if (!container) return;
+
+            let requests = [];
+            try {
+                const res = await fetch('/api/challenges');
+                if (res.ok) {
+                    requests = await res.json();
+                    localStorage.setItem('lfc_challenge_requests', JSON.stringify(requests));
+                } else {
+                    throw new Error('API non-200');
+                }
+            } catch (err) {
+                const local = localStorage.getItem('lfc_challenge_requests');
+                requests = local ? JSON.parse(local) : [
+                    { id: 1, name: 'YTFFUY', sport: 'Kabaddi', contact: 'dydu999999996', message: '55555521' }
+                ];
+            }
+
+            renderRequests(requests);
+        }
+
+        function renderRequests(requests) {
+            const container = document.getElementById('request-container');
+            if (!container) return;
+
+            if (!requests || requests.length === 0) {
+                container.innerHTML = '<p id="no-requests" class="text-gray-500 font-inter text-sm italic">No requests yet. Be the first to challenge!</p>';
+                return;
+            }
+
+            container.innerHTML = requests.map(req => `
+                <div class="relative bg-gray-900 border border-gray-700 p-4 rounded-lg shadow-sm hover:border-gray-600 transition">
+                    <div class="flex justify-between items-start mb-2">
+                        <h5 class="font-bebas text-xl text-white tracking-wide">${escapeHtml(req.name)}</h5>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs bg-neonGreen text-charcoal px-2 py-0.5 rounded font-semibold uppercase tracking-wider">${escapeHtml(req.sport)}</span>
+                            <!-- Delete Button in the Corner -->
+                            <button onclick="deleteRequest('${req.id}')" 
+                                    class="text-gray-400 hover:text-red-400 hover:bg-red-500/20 p-1 rounded transition cursor-pointer" 
+                                    title="Delete this request (Admin Password required)">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="font-inter text-gray-300 text-sm mb-2 break-words">${escapeHtml(req.message)}</p>
+                    <p class="font-inter text-gray-500 text-xs italic">Contact: ${escapeHtml(req.contact)}</p>
+                </div>
+            `).join('');
+        }
+
+        window.deleteRequest = async function(id) {
+            const isAdmin = typeof Auth !== 'undefined' && Auth.isAdmin();
+
+            if (!isAdmin) {
+                const enteredPass = prompt('Enter Admin Password to delete this request:');
+                if (enteredPass === null) return; // User clicked Cancel
+
+                if (enteredPass !== 'NSPLFC') {
+                    alert('❌ Incorrect Password! Only Admin can delete requests.');
+                    return;
+                }
+            }
+
+            if (!confirm('Are you sure you want to permanently delete this request?')) return;
+
+            try {
+                await fetch('/api/challenges/' + id, { method: 'DELETE' });
+            } catch (err) {
+                console.warn('API delete offline, falling back to localStorage');
+            }
+
+            let requests = JSON.parse(localStorage.getItem('lfc_challenge_requests') || '[]');
+            requests = requests.filter(r => String(r.id) !== String(id));
+            localStorage.setItem('lfc_challenge_requests', JSON.stringify(requests));
+
+            alert('Request deleted successfully.');
+            loadRequests();
+        };
+
+        document.getElementById('challenge-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('req-name').value.trim();
+            const sport = document.getElementById('req-sport').value;
+            const msg = document.getElementById('req-msg').value.trim();
+            const contact = document.getElementById('req-contact').value.trim();
+            
+            if (!name || !sport || !msg || !contact) return;
+
+            const newReq = { name, sport, message: msg, contact, id: Date.now() };
+
+            try {
+                const res = await fetch('/api/challenges', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, sport, message: msg, contact })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    newReq.id = data.id;
+                }
+            } catch (err) {
+                console.warn('API post offline, falling back to localStorage');
+            }
+
+            let requests = JSON.parse(localStorage.getItem('lfc_challenge_requests') || '[]');
+            requests.unshift(newReq);
+            localStorage.setItem('lfc_challenge_requests', JSON.stringify(requests));
+
+            this.reset();
+            loadRequests();
+            alert('Your request has been added to the Request Box!');
+        });
+
+        // Initialize on page load
+        loadRequests();
+    </script>
+
+    <script src="auth.js"></script>
+
+</body>
+</html>

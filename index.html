@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="logo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lovely Friends Sports Club - Namasivayapuram</title>
+    <meta name="description" content="Lovely Friends Sports Club - Unity, Passion & Sportsmanship. A youth sports club in Namasivayapuram.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neonYellow: '#ffea00',
+                        neonGreen: '#39ff14',
+                        charcoal: '#121212',
+                        cardBlack: '#1e1e1e'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        if (!localStorage.getItem('lfc_auth_user')) {
+            window.location.replace('signin.html');
+        }
+    </script>
+</head>
+<body class="bg-charcoal text-white min-h-screen flex flex-col">
+    
+                <!-- Navigation -->
+    <nav class="glass-card sticky top-0 z-50 px-6 py-4 flex justify-between items-center relative">
+        <a href="index.html" class="flex items-center gap-3 group">
+            <img src="logo.png" alt="NSP Sports Club Logo" class="w-10 h-10 rounded-full object-cover border border-cyan-400/60 shadow-[0_0_10px_rgba(6,182,212,0.4)] group-hover:scale-105 transition-transform">
+            <h1 class="text-2xl font-bebas tracking-wide text-white group-hover:text-neonYellow transition-colors">LOVELY FRIENDS</h1>
+        </a>
+
+        <!-- Right Side: Role Badge + Menu Button (Laptop & Mobile) -->
+        <div class="flex items-center gap-3">
+            <span id="nav-auth-badge" class="flex items-center"></span>
+            <button id="mobile-menu-btn" onclick="toggleNavMenu(event)" class="flex items-center gap-2 bg-gray-900 border border-gray-700 hover:border-neonYellow text-white hover:text-neonYellow px-3.5 py-1.5 rounded-lg transition font-inter text-sm font-semibold shadow-md focus:outline-none cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <span>MENU</span>
+            </button>
+        </div>
+        
+                <!-- Dropdown Menu (Laptop & Mobile) -->
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full md:w-80 md:left-auto md:right-6 bg-charcoal/95 backdrop-blur-xl border border-gray-800 flex-col font-inter font-semibold text-sm shadow-2xl z-50 md:rounded-2xl md:mt-2 overflow-hidden">
+            <!-- Profile Status Header -->
+            <div class="px-6 py-4 border-b border-gray-800/80 bg-gray-950/60 flex items-center justify-between">
+                <span id="menu-role-status" class="font-bebas text-xl tracking-wider text-cyan-400 flex items-center gap-2">
+                    <span id="menu-role-dot" class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                    <span id="menu-role-name">MEMBER</span>
+                </span>
+                <span id="menu-user-id" class="font-inter text-xs text-gray-400 font-normal"></span>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="flex flex-col">
+                <a href="index.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>HOME</span>
+                </a>
+                <a href="live-score.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>LIVE MATCH SCORE</span>
+                </a>
+                <a href="players-list.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>PLAYERS LIST</span>
+                </a>
+                <a href="stats.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>MATCH STATS</span>
+                </a>
+                <a href="gallery.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>GALLERY</span>
+                </a>
+                <a href="squad.html" class="px-6 py-3.5 border-b border-gray-800/50 flex justify-between items-center transition text-white hover:text-neonYellow hover:bg-gray-800/40">
+                    <span>SQUAD & INFO</span>
+                </a>
+            </div>
+
+            <!-- Sign Out Button Footer -->
+            <div class="p-4 border-t border-gray-800/80 bg-gray-950/60 flex justify-center">
+                <button type="button" onclick="Auth.logout()" class="w-full text-center border border-red-500/80 text-red-400 hover:bg-red-500/20 hover:text-red-300 font-bebas text-lg tracking-wider px-4 py-2 rounded-lg transition cursor-pointer">
+                    SIGN OUT
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 py-16 md:py-20 fade-in relative">
+        <div class="mb-6 relative group">
+            <div class="absolute -inset-1 bg-gradient-to-r from-cyan-400 to-neonYellow rounded-full blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
+            <img src="logo.png" alt="NSP Sports Club Logo" class="relative w-28 h-28 md:w-36 md:h-36 rounded-full object-cover border-2 border-cyan-400/80 shadow-[0_0_25px_rgba(6,182,212,0.5)] transition transform group-hover:scale-105 duration-300">
+        </div>
+        <div class="inline-block px-4 py-1 rounded-full border border-neonGreen text-neonGreen font-inter text-sm mb-6 font-semibold uppercase tracking-widest text-glow">
+            Namasivayapuram
+        </div>
+        <h2 class="font-bebas text-4xl sm:text-6xl md:text-8xl lg:text-9xl tracking-wider mb-4 leading-none">
+            LOVELY FRIENDS <span class="text-neonYellow block">SPORTS CLUB</span>
+        </h2>
+        <p class="font-inter text-white text-base sm:text-xl md:text-2xl max-w-2xl mb-4 italic leading-relaxed">
+            "தோல்வி உன்னை துரத்தினால் <br> நீ வெற்றியை நோக்கி ஓடு"
+        </p>
+    </main>
+
+    <!-- Contact Info Section -->
+    <section class="px-6 py-16 ">
+                                <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Location (Original Google Maps Icon) -->
+            <a href="https://www.google.com/maps/place/Namasivayapuram,+Tamil+Nadu+628712/@9.0648934,78.1163738,14z/data=!3m1!4b1!4m6!3m5!1s0x3b0159e0ff2e572f:0x79995ade40256102!8m2!3d9.063011!4d78.1142242!16s%2Fg%2F1tj94vy3?entry=ttu&g_ep=EgoyMDI2MDkyMy4wIKXMDSoASAFQAw%3D%3D" target="_blank"
+               class="group relative p-7 rounded-2xl bg-black/20 backdrop-blur-sm border border-white/10 hover:border-red-500/60 shadow-lg hover:shadow-[0_0_25px_rgba(234,67,53,0.35)] transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center block cursor-pointer">
+                <!-- Original Google Maps Location Pin -->
+                <svg class="w-12 h-12 mb-3 drop-shadow-[0_4px_10px_rgba(234,67,53,0.45)] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z" fill="#EA4335"/>
+                    <circle cx="12" cy="9" r="3.2" fill="#FFFFFF"/>
+                </svg>
+                <h3 class="font-bebas text-2xl md:text-3xl text-white tracking-widest mb-1.5 group-hover:text-red-400 transition-colors">LOCATION</h3>
+                <p class="font-inter text-gray-200 font-medium text-sm leading-relaxed [text-shadow:0_1px_4px_#000]">
+                    Dr. A.P.J. Abdul Kalam Ground<br>
+                    <span class="text-white font-semibold">Namasivayapuram</span>
+                </p>
+            </a>
+            
+            <!-- Instagram (Original Official Gradient Icon) -->
+            <a href="https://www.instagram.com/nsp__official_/" target="_blank"
+               class="group relative p-7 rounded-2xl bg-black/20 backdrop-blur-sm border border-white/10 hover:border-pink-500/60 shadow-lg hover:shadow-[0_0_25px_rgba(225,48,108,0.35)] transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center block cursor-pointer">
+                <!-- Original Instagram Gradient Camera -->
+                <svg class="w-12 h-12 mb-3 drop-shadow-[0_4px_10px_rgba(225,48,108,0.45)] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none">
+                    <defs>
+                        <radialGradient id="ig-original-grad" cx="0.3" cy="1.07" r="1.2">
+                            <stop offset="0%" stop-color="#fdf497"/>
+                            <stop offset="5%" stop-color="#fdf497"/>
+                            <stop offset="45%" stop-color="#fd5949"/>
+                            <stop offset="60%" stop-color="#d6249f"/>
+                            <stop offset="90%" stop-color="#285AEB"/>
+                        </radialGradient>
+                    </defs>
+                    <rect width="24" height="24" rx="6.5" fill="url(#ig-original-grad)"/>
+                    <rect x="5.5" y="5.5" width="13" height="13" rx="3.5" stroke="#FFFFFF" stroke-width="1.8" fill="none"/>
+                    <circle cx="12" cy="12" r="3.2" stroke="#FFFFFF" stroke-width="1.8" fill="none"/>
+                    <circle cx="15.8" cy="8.2" r="0.9" fill="#FFFFFF"/>
+                </svg>
+                <h3 class="font-bebas text-2xl md:text-3xl text-white tracking-widest mb-1.5 group-hover:text-pink-400 transition-colors">INSTAGRAM</h3>
+                <p class="font-inter text-gray-200 font-medium text-sm leading-relaxed [text-shadow:0_1px_4px_#000]">
+                    Follow our club page<br>
+                    <span class="text-white font-semibold">@nsp__official_</span>
+                </p>
+            </a>
+            
+            <!-- WhatsApp (Original Official WhatsApp Icon) -->
+            <a href="https://wa.me/" target="_blank"
+               class="group relative p-7 rounded-2xl bg-black/20 backdrop-blur-sm border border-white/10 hover:border-green-500/60 shadow-lg hover:shadow-[0_0_25px_rgba(37,211,102,0.35)] transition-all duration-300 transform hover:-translate-y-1 flex flex-col items-center text-center block cursor-pointer">
+                <!-- Original WhatsApp Green & White Icon -->
+                <svg class="w-12 h-12 mb-3 drop-shadow-[0_4px_10px_rgba(37,211,102,0.45)] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="11" fill="#25D366"/>
+                    <path fill="#FFFFFF" d="M17.472 14.382c-.301-.15-1.777-.877-2.052-.977-.275-.1-.475-.15-.676.15-.2.301-.776.977-.951 1.178-.175.2-.351.226-.652.075-.301-.15-1.272-.469-2.424-1.496-.895-.799-1.5-1.786-1.676-2.087-.175-.301-.019-.464.132-.614.136-.135.301-.351.451-.527.15-.175.2-.301.301-.501.1-.2.05-.376-.025-.526-.075-.15-.676-1.63-.927-2.232-.244-.587-.492-.507-.676-.516l-.576-.01c-.2 0-.526.075-.802.376-.275.301-1.052 1.028-1.052 2.508 0 1.48 1.077 2.909 1.228 3.11.15.2 2.12 3.238 5.136 4.542.717.31 1.277.495 1.713.634.721.229 1.377.197 1.895.12.577-.087 1.777-.727 2.027-1.429.25-.702.25-1.304.175-1.429-.075-.125-.275-.2-.576-.35z"/>
+                </svg>
+                <h3 class="font-bebas text-2xl md:text-3xl text-white tracking-widest mb-1.5 group-hover:text-green-400 transition-colors">WHATSAPP</h3>
+                <p class="font-inter text-gray-200 font-medium text-sm leading-relaxed [text-shadow:0_1px_4px_#000]">
+                    Chat with our members<br>
+                    <span class="text-white font-semibold">Join community group</span>
+                </p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 py-6 text-center text-gray-500 font-inter text-xs">
+        <p>&copy; 2026 Lovely Friends Sports Club - Namasivayapuram. All rights reserved.</p>
+    </footer>
+
+
+    <script src="auth.js"></script>
+    
+
+</body>
+</html>
